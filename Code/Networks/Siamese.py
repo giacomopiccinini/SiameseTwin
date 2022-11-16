@@ -2,6 +2,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Input
 from tensorflow.keras.layers import Lambda
+from tensorflow.keras.applications.inception_resnet_v2 import preprocess_input
 
 from Code.Networks.Resnet import Resnet
 from Code.Metric.euclidean import euclidean_distance
@@ -21,6 +22,10 @@ def SiameseNetwork(shape: tuple):
 
     # Define the feature extractor (i.e. the sister network)
     feature_extractor = Resnet()
+
+    # Preprocess input for the feature extractor
+    image_1 = preprocess_input(image_1)
+    image_2 = preprocess_input(image_2)
 
     # Extract features from the two input images
     # Make sure it runs in inference mode
