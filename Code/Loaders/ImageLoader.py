@@ -89,7 +89,7 @@ class ImageLoader(Sequence):
         """Check that all images in dataset have the same shape. If not, raise an error"""
 
         # Retrieve shapes (specify that it should be a numpy array of tuples)
-        shapes = np.array([tensor.shape for tensor in list(self.data)], dtype="i,i")
+        shapes = np.array([tensor.shape for tensor in list(self.data)], dtype="i,i,i")
 
         # Check unicity
         shape = np.unique(shapes)
