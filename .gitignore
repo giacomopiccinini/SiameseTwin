@@ -5,3 +5,6 @@ venv/
 *.hdf5
 *.ipynb
 Logs/
+*.xlsx
+*.txt
+*.csv
