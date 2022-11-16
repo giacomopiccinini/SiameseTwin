@@ -1,10 +1,13 @@
 __pycache__/
 venv/
+*.xlsx
 *.jpg
 *.png
 *.hdf5
 *.ipynb
 Logs/
-*.xlsx
 *.txt
 *.csv
+*.xls
+*.xml
+*.yaml
