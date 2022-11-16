@@ -59,13 +59,19 @@ class Image:
         if len(image.shape) < 3:
 
             grey = True
-            tensor = image
+
+            # Trun greyscale to RGB
+            tensor = np.stack((image,) * 3, axis=-1)
 
         # Image is of the form (height, width, 1)
         elif image.shape[2] == 1:
+
+            # Extract relevant part
             image = image.reshape((image.shape[0], image.shape[1]))
             grey = True
-            tensor = image
+
+            # Expand to RGB
+            tensor = np.stack((image,) * 3, axis=-1)
 
         # Image has 3 channels
         else:
@@ -74,8 +80,8 @@ class Image:
 
             # If all channels are equal is greyscale
             if (b == g).all() and (b == r).all():
-                image = image[:, :, :1]
-                image = image.reshape((image.shape[0], image.shape[1]))
+                # image = image[:, :, :1]
+                # image = image.reshape((image.shape[0], image.shape[1]))
                 grey = True
                 tensor = image
 
@@ -124,7 +130,7 @@ class Image:
         # Convert to float
         tensor = tensor.astype("float32")
 
-        # Compute normalised
-        normalised = (tensor - minimum) / span
+        # Compute normalised version between -1 and +1
+        normalised = 2 * ((tensor - minimum) / span) - 1
 
         return cls.from_tensor(normalised)
