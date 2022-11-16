@@ -18,7 +18,7 @@ def SiameseNetwork(shape: tuple):
     # Define the inputs of the network
     image_1 = Input(shape=image_shape)
     image_2 = Input(shape=image_shape)
-
+    
     # Define the feature extractor (i.e. the sister network)
     feature_extractor = Resnet()
 
