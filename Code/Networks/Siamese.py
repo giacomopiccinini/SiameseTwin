@@ -3,20 +3,11 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Input
 from tensorflow.keras.layers import Lambda
 
-from Code.Networks.Sister import SisterNetwork
+from Code.Networks.Resnet import Resnet
 from Code.Metric.euclidean import euclidean_distance
 
 
-def SiameseNetwork(
-    shape: tuple,
-    latent: int,
-    kernel_size_x: int,
-    kernel_size_y: int,
-    pool_size_x: int,
-    pool_size_y: int,
-    dropout: float,
-    filters: tuple,
-):
+def SiameseNetwork(shape: tuple):
 
     """Siamese network implementation based on a feature extractor defined as the
     Sister Network"""
@@ -29,20 +20,13 @@ def SiameseNetwork(
     image_2 = Input(shape=image_shape)
 
     # Define the feature extractor (i.e. the sister network)
-    feature_extractor = SisterNetwork(
-        shape=image_shape,
-        kernel_size_x=kernel_size_x,
-        kernel_size_y=kernel_size_y,
-        pool_size_x=pool_size_x,
-        pool_size_y=pool_size_y,
-        dropout=dropout,
-        filters=filters,
-        latent=latent,
-    )
+    feature_extractor = Resnet()
 
     # Extract features from the two input images
-    features_1 = feature_extractor(image_1)
-    features_2 = feature_extractor(image_2)
+    # Make sure it runs in inference mode
+    # This way, the batch norm will not cause harm
+    features_1 = feature_extractor(image_1, training=False)
+    features_2 = feature_extractor(image_2, training=False)
 
     # Pass the features into a distance layer
     distance = Lambda(euclidean_distance)([features_1, features_2])
