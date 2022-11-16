@@ -17,16 +17,7 @@ def prepare(args, shape):
         new_shape = shape
 
     # Load Regression CNN
-    Siamese = SiameseNetwork(
-        shape=new_shape,
-        latent=args["Prepare"].latent,
-        kernel_size_x=args["Prepare"].kernel_size_x,
-        kernel_size_y=args["Prepare"].kernel_size_y,
-        pool_size_x=args["Prepare"].pool_size_x,
-        pool_size_y=args["Prepare"].pool_size_y,
-        dropout=args["Prepare"].dropout,
-        filters=args["Prepare"].filters,
-    )
+    Siamese = SiameseNetwork(shape=new_shape)
 
     # Compile and summarise model
     Siamese.compile(optimizer=Optimizer, loss=Loss, metrics=["accuracy"])
