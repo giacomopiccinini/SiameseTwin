@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from yaml import safe_load
 from Code.Loaders.ImageLoader import ImageLoader
 from Code.Classes.Label import Label
 
@@ -8,39 +8,39 @@ def split(args):
 
     """Split dataset into train, test and validation.
 
-    Variables and default values:
-
-    test_size=0.2
-    validation_size=0.2
-    seed=42
+    Default split for CelebA is used
 
     """
 
     # Read from Excel file containing labels and images names
     df = pd.read_excel("Input/Labels/labels.xlsx")
 
-    # Create paths to data
-    image_paths = [f"Input/Images/{image}" for image in df["Image"]]
+    # Load canonical splits
+    with open("Split/splits.yaml", "r") as file:
+        sets = safe_load(file)
+        train_set = sets["train"]
+        validation_set = sets["validation"]
+        test_set = sets["test"]
 
-    # Retrieve labels
-    labels = list(map(Label, df["Image"], df["Label"]))
+    # Split in train, test and validation
+    images_train = df.query("Image in @train_set")["Image"]
+    labels_train = df.query("Image in @train_set")["Label"]
+    labels_train = list(map(Label, labels_train))
 
-    # Separate test and train set
-    images_train, images_test, labels_train, labels_test = train_test_split(
-        image_paths, labels, test_size=args.test_size, random_state=args.seed
-    )
+    images_validation = df.query("Image in @validation_set")["Image"]
+    labels_validation = df.query("Image in @validation_set")["Label"]
+    labels_validation = list(map(Label, labels_validation))
 
-    # Separate train and validation set
-    images_train, images_validation, labels_train, labels_validation = train_test_split(
-        images_train,
-        labels_train,
-        test_size=args.validation_size,
-        random_state=args.seed,
-    )
+    images_test = df.query("Image in @test_set")["Image"]
+    labels_test = df.query("Image in @test_set")["Label"]
+    labels_test = list(map(Label, labels_test))
 
     # Initialise datasets
     train_set = ImageLoader(
-        images_train, labels_train, set_type="train", batch_size=args.batch
+        images_train, 
+        labels_train, 
+        set_type="train", 
+        batch_size=args.batch
     )
 
     validation_set = ImageLoader(
@@ -60,10 +60,5 @@ def split(args):
         maximum=train_set.maximum,
         minimum=train_set.minimum,
     )
-
-    # Save splitting in .yaml files
-    train_set.save_split()
-    validation_set.save_split()
-    test_set.save_split()
 
     return train_set, validation_set, test_set
