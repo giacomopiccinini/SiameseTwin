@@ -1,16 +1,22 @@
 import numpy as np
+import logging
 from Code.Techniques.Pairing.pair import make_pairs
 
 
 def pair_dataset(train_set, validation_set, test_set):
 
     """Create paired train, validation  and test set"""
+    
+    # Set logger
+    logging.basicConfig(level=logging.NOTSET)
+    log = logging.getLogger(__name__)
 
     # Extract images and labels from training set
     train_images = np.array([image.tensor for image in train_set.data])
     train_labels = np.array([label.label for label in train_set.labels])
 
     # Split images and labels in pairs of positive and negative
+    log.info("Pairing training set")
     paired_train_images, paired_train_labels = make_pairs(train_images, train_labels)
 
     # Split in positive and negative
@@ -21,6 +27,7 @@ def pair_dataset(train_set, validation_set, test_set):
     validation_labels = np.array([label.label for label in validation_set.labels])
 
     # Split images and labels in pairs of positive and negative
+    log.info("Pairing validation set")
     paired_validation_images, paired_validation_labels = make_pairs(
         validation_images, validation_labels
     )
@@ -36,6 +43,7 @@ def pair_dataset(train_set, validation_set, test_set):
     test_labels = np.array([label.label for label in test_set.labels])
 
     # Split images and labels in pairs of positive and negative
+    log.info("Pairing test set")
     paired_test_images, paired_test_labels = make_pairs(test_images, test_labels)
 
     # Split in positive and negative
