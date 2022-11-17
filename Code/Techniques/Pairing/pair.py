@@ -1,7 +1,8 @@
 import numpy as np
+from tqdm import tqdm
 
 
-def make_pairs(images, labels):
+def make_pairs(images, labels, bound=50000):
 
     """Pair images and labels"""
 
@@ -11,15 +12,26 @@ def make_pairs(images, labels):
     pair_labels = []
 
     # Calculate the total number of classes present in the dataset
-    num_classes = len(np.unique(labels))
+    classes = np.unique(labels)
 
     # Build a list of indices for each class label that
     # provides the indices for all examples with a given label
-    idx = [np.where(labels == i)[0] for i in range(num_classes)]
+    idx = [np.where(labels == i)[0] for i in classes]
+    
+    # Initialise counter to prevent memory allocation error
+    counter = 0
 
-    for idx_a, (current_image, label) in enumerate(zip(images, labels)):
+    for current_image, label in tqdm(zip(images, labels)):
+        
+        # Break if we exceeed the bound
+        if counter > bound:
+            break
+     
+        # Fetch index for class of interest
+        class_idx = np.where(classes == label)[0][0]
+        
         # Randomly pick an image that belongs to the *same* class
-        idx_b = np.random.choice(idx[label])
+        idx_b = np.random.choice(idx[class_idx])
         pos_image = images[idx_b]
 
         # Find indices for negative classes
@@ -35,5 +47,8 @@ def make_pairs(images, labels):
         # Update images and labels for negative class
         pair_images.append([current_image, neg_image])
         pair_labels.append([0])
+        
+        # Increase counter
+        counter += 1
 
     return np.array(pair_images), np.array(pair_labels)
