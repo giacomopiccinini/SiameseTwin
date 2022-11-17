@@ -2,7 +2,7 @@ import numpy as np
 from tqdm import tqdm
 
 
-def make_pairs(images, labels, bound=50000):
+def make_pairs(images, labels, bound=20000):
 
     """Pair images and labels"""
 
