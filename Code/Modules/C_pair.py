@@ -17,7 +17,12 @@ def pair_dataset(train_set, validation_set, test_set):
 
     # Split images and labels in pairs of positive and negative
     log.info("Pairing training set")
-    paired_train_images, paired_train_labels = make_pairs(train_images, train_labels)
+    paired_train_images, paired_train_labels = make_pairs(train_images, train_labels, bound=20)
+    
+    # Delete and free memory allocated
+    del train_images
+    del train_labels
+    del train_set
 
     # Split in positive and negative
     paired_train_images = [paired_train_images[:, 0], paired_train_images[:, 1]]
@@ -29,8 +34,13 @@ def pair_dataset(train_set, validation_set, test_set):
     # Split images and labels in pairs of positive and negative
     log.info("Pairing validation set")
     paired_validation_images, paired_validation_labels = make_pairs(
-        validation_images, validation_labels
+        validation_images, validation_labels, bound=8
     )
+    
+    # Delete and free memory allocated
+    del validation_images
+    del validation_labels
+    del validation_set
 
     # Split in positive and negative
     paired_validation_images = [
@@ -44,7 +54,12 @@ def pair_dataset(train_set, validation_set, test_set):
 
     # Split images and labels in pairs of positive and negative
     log.info("Pairing test set")
-    paired_test_images, paired_test_labels = make_pairs(test_images, test_labels)
+    paired_test_images, paired_test_labels = make_pairs(test_images, test_labels, bound=8)
+    
+    # Delete and free memory allocated
+    del test_images
+    del test_labels
+    del test_set
 
     # Split in positive and negative
     paired_test_images = [paired_test_images[:, 0], paired_test_images[:, 1]]
