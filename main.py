@@ -9,6 +9,10 @@ import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
+import h5py
+
+h5py._conv.logger.setLevel("ERROR")
+
 import comet_ml
 
 from Code.Parser.parser import parse
@@ -25,7 +29,7 @@ if __name__ == "__main__":
 
     logging.info("Parsing requests")
     args = parse()
-
+    
     logging.info("Loading datasets")
     train_set, validation_set, test_set = split(args["Split"])
 
