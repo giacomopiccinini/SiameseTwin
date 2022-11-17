@@ -11,3 +11,4 @@ Logs/
 *.xls
 *.xml
 *.yaml
+.comet.config
